@@ -1,4 +1,5 @@
 falcon
 gunicorn
+releasify
 requests
 slackclient

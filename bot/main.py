@@ -2,9 +2,22 @@
 import json
 import logging
 import os
+from pprint import pprint
 
 import falcon
 from slackclient import SlackClient
+
+
+GITHUB_USER = os.getenv('GITHUB_USER')
+GITHUB_PASSWORD = os.getenv('GITHUB_PASSWORD')
+SLACK_TOKEN = os.getenv('SLACK_TOKEN')
+
+# print('GITHUB_USER:', GITHUB_USER)
+# print('GITHUB_PASSWORD:', GITHUB_PASSWORD)
+# print('SLACK_TOKEN:', SLACK_TOKEN)
+
+
+client = SlackClient(SLACK_TOKEN)
 
 
 class PingResource(object):
@@ -18,11 +31,33 @@ class PingResource(object):
 class ReleaseResource(object):
     def on_post(self, req, resp):
         logging.critical(req.params)
-        release_type = req.get_param('text', '').strip()
+        text = req.get_param('text')
+        print('text....', text)
         # TODO: check release_type is valid - return error otherwise
 
-        resp.media = {"text": release_type}
+        msg = {
+            'channel': req.get_param('channel_id'),
+            'as_user': True,
+            "blocks": [{
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "_hello_ *world*",
+                },
+                "accessory": {
+                    "type": "button",
+                    "text": {
+                        "type": "plain_text",
+                        "text": "Button",
+                    },
+                    "value": "click_me_123"
+                }
+            }]
+        }
 
+        resp = client.api_call('chat.postMessage', **msg)
+        pprint(resp)
+        
 
 def create_api():
     api = falcon.API()
