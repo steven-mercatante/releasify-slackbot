@@ -41,7 +41,7 @@ def handle_error(exception, req, resp, params):
         return 
 
     if isinstance(exception, UnauthorizedError):
-        msg = '...' # TODO: set msg
+        msg = 'Invalid GitHub credentials'
     elif isinstance(exception, (InvalidReleaseTypeError)):
         msg = 'Invalid `release_type`. Must be one of: `major`, `minor`, `patch`'
     elif isinstance(exception, NotFoundError):
