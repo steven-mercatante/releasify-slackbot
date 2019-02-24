@@ -10,7 +10,7 @@ text_parser_pattern = re.compile(r'^\s*(?P<repo>[\w-]+)\s+(?P<release_type>\w+)\
 
 class ReleaseResource(object):
     def on_post(self, req, resp):
-        logging.critical(req.params)
+        # logging.critical(req.params)
         text = req.get_param('text')
 
         try:
@@ -18,6 +18,7 @@ class ReleaseResource(object):
         except TypeError:
             msg = 'Invalid paramters. Format should be `/releasify repo_name release_type`'
             post_error_msg(req.get_param('channel_id'), req.get_param('user_id'), msg)
+            return
 
         # TODO: check release_type is valid - return error otherwise
 
