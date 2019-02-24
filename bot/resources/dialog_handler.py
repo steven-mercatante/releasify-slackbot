@@ -20,10 +20,24 @@ class DialogHandlerResource(object):
                 state['release_type'],
                 next_tag=release_tag,
                 body=release_body,
+                force=True,
             )
-            pprint(resp)
+
+            msg = '🎉 *{user}* created the *{tag}* release for *{owner}*/*{repo}*'.format(
+                user=payload['user']['name'],
+                tag=resp['tag_name'],
+                owner=REPO_OWNER,
+                repo=state['repo']
+            )
+
+            slack_client.api_call(
+                'chat.postMessage',
+                channel=payload['channel']['id'],
+                text=msg,
+                as_user=True,
+            )
         except Exception as e:
-            msg = f'An error occurred: {str(e)}'
+            msg = f'😬 An error occurred: {str(e)}'
             slack_client.api_call(
                 'chat.postEphemeral',
                 channel=payload['channel']['id'],
@@ -31,5 +45,3 @@ class DialogHandlerResource(object):
                 text=msg,
                 as_user=True,
             )
-
-        # TODO: post message in channel upon success
