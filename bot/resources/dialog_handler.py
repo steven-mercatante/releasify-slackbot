@@ -2,6 +2,7 @@ import json
 from pprint import pprint
 
 from ..config import REPO_OWNER, releasify_client, slack_client
+from ..utils import post_error_msg
 
 
 class DialogHandlerResource(object):
@@ -20,7 +21,7 @@ class DialogHandlerResource(object):
                 state['release_type'],
                 next_tag=release_tag,
                 body=release_body,
-                force=True,
+                # force=True,
             )
 
             msg = '🎉 *{user}* created the *{tag}* release for *{owner}*/*{repo}*'.format(
@@ -38,10 +39,4 @@ class DialogHandlerResource(object):
             )
         except Exception as e:
             msg = f'😬 An error occurred: {str(e)}'
-            slack_client.api_call(
-                'chat.postEphemeral',
-                channel=payload['channel']['id'],
-                user=payload['user']['id'],
-                text=msg,
-                as_user=True,
-            )
+            post_error_msg(payload['channel']['id'], payload['user']['id'], msg)

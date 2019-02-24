@@ -3,16 +3,22 @@ import logging
 import re
 
 from ..config import REPO_OWNER, releasify_client, slack_client
+from ..utils import post_error_msg
 
 
 text_parser_pattern = re.compile(r'^\s*(?P<repo>[\w-]+)\s+(?P<release_type>\w+)\s*$')
 
 class ReleaseResource(object):
     def on_post(self, req, resp):
-        # logging.critical(req.params)
+        logging.critical(req.params)
         text = req.get_param('text')
 
-        repo, release_type = parse_text(text)
+        try:
+            repo, release_type = parse_text(text)
+        except TypeError:
+            msg = 'Invalid paramters. Format should be `/releasify repo_name release_type`'
+            post_error_msg(req.get_param('channel_id'), req.get_param('user_id'), msg)
+
         # TODO: check release_type is valid - return error otherwise
 
         # TODO: force should be passable as an arg. Or maybe show a button asking the user if they want to force it if there haven't been commits since the last release.
@@ -31,7 +37,7 @@ class ReleaseResource(object):
 
         dialog = json.dumps({
             'callback_id': 'create-release',
-            'title': 'Create a Release',
+            'title': 'Create a Release for',
             'submit_label': 'Create',
             'state': state,
             'elements': [{
