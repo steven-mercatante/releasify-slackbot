@@ -1,11 +1,4 @@
 # TODO: verify commands sent by Slack using verification token
-import json
-import logging
-import os
-import re
-from pprint import pprint
-from textwrap import dedent
-
 import falcon
 
 from .resources.release import ReleaseResource

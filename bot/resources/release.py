@@ -9,7 +9,7 @@ text_parser_pattern = re.compile(r'^\s*(?P<repo>[\w-]+)\s+(?P<release_type>\w+)\
 
 class ReleaseResource(object):
     def on_post(self, req, resp):
-        logging.critical(req.params)
+        # logging.critical(req.params)
         text = req.get_param('text')
 
         repo, release_type = parse_text(text)
